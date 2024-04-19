@@ -1,5 +1,5 @@
-# 
-
+# Setup 5 microservices 
+### List of microservices
 As part of this project, we are going to provision 5 microservices
 
 1. Web service - Access the application
@@ -7,7 +7,7 @@ As part of this project, we are going to provision 5 microservices
 3. Position Tracker
 4. Position Simulator
 5. ActiveMQ
-
+### webapp microservice as a pod 
 Let's create a webapp pod 1st
 
 ```sh
@@ -25,7 +25,7 @@ spec:
 ```
 
 We can experiment it with “release0” and “release0-5”
-
+### webapp service
 to access this application we need service. below is the service manifest file 
 
 ```sh
@@ -45,7 +45,7 @@ spec:
 ```
 
 now we can access this application from the browsers. but make sure that you have opened the 30080 port in the security group. 
-
+### webapp microservice as a deployment 
 in the current case, we are using the resource type as pod. If the pod is terminated our application goes down. to overcome this we can use the “deployment” resource. So adjust configuration like below 
 
 ```sh
@@ -72,7 +72,7 @@ spec:
 ```
 
 As we just changed the resource type for pod we can use same deployment. make sure your labels and selector are matching in the manifest files. 
-
+### ActiveMQ
 Now lets add another service to webapp that is ActiveMQ
 
 ```sh
@@ -119,7 +119,7 @@ spec:
       - name: queue
         image: richardchesterwood/k8s-fleetman-queue:release1
 ```
-
+### ActiveMQ service
 We are using ActiveMQ service type as NodePort. it uses 2 ports, i.e 8161 and 61616. Later we are going to changes these to ClusterIP  
 
 ```sh
@@ -153,10 +153,10 @@ spec:
       port: 61616
   type: NodePort
 ```
-
+### Positon Simulator
 Now we are adding another microservice that is position simulator (ps) this need environment variable please add this to the position simulator configuration 
 
-> - name: SPRING_PROFILES_ACTIVE
+> - name: SPRING_PROFILES_ACTIVE  
           value: production-microservice
 > 
 
@@ -236,8 +236,9 @@ For Position Simulator (ps) service isn't required. So we can proceed with the n
 
 We need to add a new microservice. That is the Position tracker (pt). For this also we need env variables
 
-        - name: SPRING_PROFILES_ACTIVE
-          value: production-microservice 
+> - name: SPRING_PROFILES_ACTIVE  
+          value: production-microservice
+> 
 
 ```sh
 apiVersion: apps/v1
