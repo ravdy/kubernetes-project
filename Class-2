@@ -10,7 +10,7 @@ As part of this project, we are going to provision 5 microservices
 
 Let's create a webapp pod 1st
 
-```jsx
+```sh
 apiVersion: v1
 kind: Pod
 metadata:
@@ -28,7 +28,7 @@ We can experiment it with “release0” and “release0-5”
 
 to access this application we need service. below is the service manifest file 
 
-```jsx
+```sh
 apiVersion: v1
 kind: Service
 metadata:
@@ -48,7 +48,7 @@ now we can access this application from the browsers. but make sure that you hav
 
 in the current case, we are using the resource type as pod. If the pod is terminated our application goes down. to overcome this we can use the “deployment” resource. So adjust configuration like below 
 
-```jsx
+```sh
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -75,7 +75,7 @@ As we just changed the resource type for pod we can use same deployment. make su
 
 Now lets add another service to webapp that is ActiveMQ
 
-```jsx
+```sh
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -122,7 +122,7 @@ spec:
 
 We are using ActiveMQ service type as NodePort. it uses 2 ports, i.e 8161 and 61616. Later we are going to changes these to ClusterIP  
 
-```jsx
+```sh
 apiVersion: v1
 kind: Service
 metadata:
@@ -160,7 +160,7 @@ Now we are adding another microservice that is position simulator (ps) this need
           value: production-microservice
 > 
 
-```jsx
+```sh
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -239,7 +239,7 @@ We need to add a new microservice. That is the Position tracker (pt). For this a
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice 
 
-```jsx
+```sh
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -333,7 +333,7 @@ spec:
 
 Let's add a service for the position tracker. 
 
-```jsx
+```sh
 apiVersion: v1
 kind: Service
 metadata:
@@ -385,7 +385,7 @@ spec:
 
 Now let's add API proxy service
 
-```jsx
+```sh
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -504,7 +504,7 @@ spec:
 
 lets add a service for API proxy microservice 
 
-```jsx
+```sh
 apiVersion: v1
 kind: Service
 metadata:
@@ -570,7 +570,7 @@ spec:
 
 Now lets release the version2 as version one is unable to track vehicles route. developers fixed in the version2 so we need to update the take as “relase2” in all microservice. 
 
-```jsx
+```sh
 apiVersion: apps/v1
 kind: Deployment
 metadata:
