@@ -198,40 +198,7 @@ spec:
   type: ClusterIP
 ```
 
-`aws eks update-kubeconfig --region us-east-1 --name xample-dev`
-
-```yaml
-# What do want?
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mongo-pvc
-spec:
-  storageClassName: mylocalstorage
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
-# How do we want it implemented
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-storage
-spec:
-  storageClassName: mylocalstorage
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/some-one/mangodb/"
-    type: DirectoryOrCreate
-
-```
-
-to use EBS we need to install below drivers 
+To use EBS we need to install below drivers
 
 **you need to use the correct region in Step 1, and in each step you must replace YourClusterName with.. your cluster name!**
 
@@ -428,64 +395,3 @@ spec:
 ```
 
 Now Liveness comes in to the picture when we have readiness in the picture. Actually Livenss restarts the container incase of any failure. 
-
-### Horizontal Pod Autoscaling
-
-now we can test the Horizontal pod autoscaling. we can test this on API Proxy microservice. To enable this we need to use api proxy image with  “performance” tag. 
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: api-gateway
-spec:
-  selector:
-    matchLabels:
-      app: api-gateway
-  replicas: 1
-  template: # template for the pods
-    metadata:
-      labels:
-        app: api-gateway
-    spec:
-      containers:
-      - name: api-gateway
-        image: richardchesterwood/k8s-fleetman-api-gateway:performance
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: production-microservice
-        resources: 
-          requests: 
-            memory: 200Mi
-            cpu: 50m
-```
-
-We are creating autoscaling for deployment not for pod. for this we should create a hpa yaml file. same can be generated with help of a kubectl command. 
-
-```yaml
-kubectl autoscale deployment api-gateway --cup-percent 400 --min 1 --max 4 
-
-```
-
-### Ingress controller
-
-Install nginx ingress controller using helm
-
-install helm 
-
-```jsx
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh 
-
-chmod 700 get_helm.sh 
-
-./get_helm.sh
-```
-
-Add the NGINX Ingress repository
-
-```yaml
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-```
-
-Install the NGINX Ingress Controller:
